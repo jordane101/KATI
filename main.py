@@ -67,13 +67,13 @@ while True:
                 if buy:
                     resp = kl.addOrder('buy', priceData, volumeData, 'limit')
                     if not resp['error']:
-                        print('Buy order added!')
+                        print(f"Buy order added! TX id: {resp['result'].get('txid')}")
                     else:
                         print('error when adding order')
                 elif sell:
                     resp = kl.addOrder('sell', priceData, volumeData, 'limit')
                     if not resp['error']:
-                        print('Sell order added!')
+                        print(f"Sell order added! TX id: {resp['result'].get('txid')}")
                     else:
                         print('error when adding order')
                 else:
