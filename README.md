@@ -15,8 +15,9 @@ krakenex
 dotenv
 
 Future Plans (in order of importance):
-automatic installation of python virtual environment
-library documentation (sorry it's a mess at the moment)
-multiple coins for analysis/trading
-deeper analysis using sentiment in the Technical Analysis API
+automatic installation of python virtual environment,
+library documentation (sorry it's a mess at the moment),
+multiple coins for analysis/trading,
+deeper analysis using sentiment in the Technical Analysis API,
+GUI
 
