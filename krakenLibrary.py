@@ -117,7 +117,7 @@ def orderData():
     response = kraken_request('/0/private/OpenOrders',{"nonce": str(int(1000*time.time())),"trades": True}, api_key, api_sec).json()
     return response
 
-def autoTrade(asset='btc'):
+def autoTrade(amount=100, asset='btc'):
         # auto buy/sell based on technical analysis API
         # initialize variables
         running = True
@@ -135,7 +135,7 @@ def autoTrade(asset='btc'):
                 analysis = query_analysis('btc')
                 query_time = analysis[0]
                 data = analysis[1]
-                volumeData = 100 / data['price_btc']
+                volumeData = amount / data['price_btc']
                 priceData = data['price_btc']
                 orders = orderData()
                 print(data)

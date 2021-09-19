@@ -41,7 +41,8 @@ while True:
         response = kraken.query_public(f'Ticker?pair={assetpair.upper()}')
         print(response['result'])
     elif p.lower() == 'autotrade':
-        kl.autoTrade()
+        a = input("Enter dollar amount to autotrade:")
+        kl.autoTrade(a)
         
     elif p.lower() == 'analysis':
         a = input('Which asset would you like analysis for?')
