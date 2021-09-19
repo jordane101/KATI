@@ -19,7 +19,7 @@ api_sec = os.environ.get('API_SEC_KRAKEN')
 
 kraken = krakenex.API(key=api_key,secret=api_sec)
 
-print("Early Testing of the Kraken Automated Trading Interface (KATI)")
+print("Welcome to the Kraken Automated Trading Interface (KATI)")
 print("enter 'q' to quit")
 while True:
     #while loop to access commands
