@@ -50,28 +50,35 @@ while True:
         analysis = kl.query_analysis('btc')
         query_time = analysis[0]
         data = analysis[1]
+        print(data)
         while running:
             # while loop querying analysis api and automatically adding buy/sell orders
-            while queriable:
+            if time.time() >= query_time + 900:
+                #wait 15 minutes between queries
                 analysis = kl.query_analysis('btc')
                 query_time = analysis[0]
                 data = analysis[1]
-            v = 100 / data['price_btc']
-            if time.time() >= query_time + 900:
-                #waiting every 15 minutes to query
-                queriable = True
-            if data['recommendation'] == 'buy':
-                resp = kl.addOrder('buy', data['price_btc'], v, 'limit')
-                if not resp['error']:
-                    print('Buy order added!')
+                
+                volumeData = 100 / data['price_btc']
+                priceData = data['price_btc']
+                print(data)
+                buy = data['recommendation'] == 'buy' and data['sentiment'] > 25
+                sell = data['recommendation'] == 'sell' and data['sentiment'] < 20
+                if buy:
+                    resp = kl.addOrder('buy', priceData, volumeData, 'limit')
+                    if not resp['error']:
+                        print('Buy order added!')
+                    else:
+                        print('error when adding order')
+                elif sell:
+                    resp = kl.addOrder('sell', priceData, volumeData, 'limit')
+                    if not resp['error']:
+                        print('Sell order added!')
+                    else:
+                        print('error when adding order')
                 else:
-                    print('error when adding order')
-            elif data['recommendation'] == 'sell':
-                resp = kl.addOrder('sell', data['price_btc'], v, 'limit')
-                if not resp['error']:
-                    print('Sell order added!')
-                else:
-                    print('error when adding order')
+                    print('hodling')
+            
     elif p.lower() == 'analysis':
         a = input('Which asset would you like analysis for?')
         analysis = kl.query_analysis(a)
