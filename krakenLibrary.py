@@ -54,7 +54,7 @@ def ohlcData(assetPair='XBTUSD'):
         print("Error")
 
 def get_kraken_signature(urlpath, data, secret):
-
+    # build kraken signage
     postdata = urllib.parse.urlencode(data)
     encoded = (str(data['nonce']) + postdata).encode()
     message = urlpath.encode() + hashlib.sha256(encoded).digest()
@@ -87,7 +87,7 @@ def checkBalance(var):
             account_response = response['result']
     return account_response
 
-def addOrder(buySell, price, volume, orderType, assetPair='BTCUSD'):
+def addOrder(buySell, price, volume, orderType, refid, assetPair='BTCUSD'):
     # function to create order data for the specified asset
     data = {
         "nonce": str(int(1000*time.time())),
@@ -95,19 +95,69 @@ def addOrder(buySell, price, volume, orderType, assetPair='BTCUSD'):
         "type": buySell,
         "volume": volume,
         "pair": assetPair,
-        "price": price
+        "price": price,
+        "userref": refid
         }
     response = kraken_request('/0/private/AddOrder', data, api_key, api_sec).json()
     return response
     
 def query_analysis(asset):
+    # query Technical Analysis API
     analysis_url = f'https://technical-analysis-api.com/api/v1/analysis/{asset.upper()}?apiKey={analysis_key}'
     response = requests.get(analysis_url).json()
     return time.time(), response
+
 def cancelAll():
+    # cancel all open orders
     resp = kraken_request('/0/private/CancelAll', {"nonce": str(int(1000*time.time()))}, api_key, api_sec).json()
     return resp
 
+def orderData():
+    # generates open order info
+    response = kraken_request('/0/private/OpenOrders',{"nonce": str(int(1000*time.time())),"trades": True}, api_key, api_sec).json()
+    return response
 
-
+def autoTrade(asset='btc'):
+        # auto buy/sell based on technical analysis API
+        # initialize variables
+        running = True
+        queriable = False
+        query_time = 0
+        # initial query to start program, then wait
+        analysis = query_analysis('btc')
+        query_time = analysis[0]
+        data = analysis[1]
+        print(data)
+        while running:
+            # while loop querying analysis api and automatically adding buy/sell orders
+            if time.time() >= query_time + 900:
+                #wait 15 minutes between queries
+                analysis = query_analysis('btc')
+                query_time = analysis[0]
+                data = analysis[1]
+                volumeData = 100 / data['price_btc']
+                priceData = data['price_btc']
+                orders = orderData()
+                print(data)
+                
+                buy = data['recommendation'] == 'buy' and data['sentiment'] > 25
+                sell = data['recommendation'] == 'sell' and data['sentiment'] < 20
+                if buy:
+                    resp = addOrder('buy', priceData, volumeData, 'limit', refid=100)
+                   
+                    if not resp['error']:
+                        print(f"Buy order added! TX id: {resp['result'].get('txid')}")
+                    else:
+                        print(resp['error'])
+                elif sell:
+                    resp = addOrder('sell', priceData, volumeData, 'limit',refid=100)
+                    
+                    if not resp['error']:
+                        print(f"Sell order added! TX id: {resp['result'].get('txid')}")
+                    else:
+                        print(resp['error'])
+                else:
+                    print('hodling')
+                print(orders)
+        #add a log.txt file
     

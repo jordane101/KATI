@@ -40,45 +40,9 @@ while True:
         assetpair = input("Enter asset pair to retrieve ticker:")
         response = kraken.query_public(f'Ticker?pair={assetpair.upper()}')
         print(response['result'])
-    elif p.lower() == 'run':
-        #auto buy/sell based on technical analysis API
-        # initialize variables
-        running = True
-        queriable = False
-        query_time = 0
-        # initial query to start program, then wait
-        analysis = kl.query_analysis('btc')
-        query_time = analysis[0]
-        data = analysis[1]
-        print(data)
-        while running:
-            # while loop querying analysis api and automatically adding buy/sell orders
-            if time.time() >= query_time + 900:
-                #wait 15 minutes between queries
-                analysis = kl.query_analysis('btc')
-                query_time = analysis[0]
-                data = analysis[1]
-                
-                volumeData = 100 / data['price_btc']
-                priceData = data['price_btc']
-                print(data)
-                buy = data['recommendation'] == 'buy' and data['sentiment'] > 25
-                sell = data['recommendation'] == 'sell' and data['sentiment'] < 20
-                if buy:
-                    resp = kl.addOrder('buy', priceData, volumeData, 'limit')
-                    if not resp['error']:
-                        print(f"Buy order added! TX id: {resp['result'].get('txid')}")
-                    else:
-                        print('error when adding order')
-                elif sell:
-                    resp = kl.addOrder('sell', priceData, volumeData, 'limit')
-                    if not resp['error']:
-                        print(f"Sell order added! TX id: {resp['result'].get('txid')}")
-                    else:
-                        print('error when adding order')
-                else:
-                    print('hodling')
-            
+    elif p.lower() == 'autotrade':
+        kl.autoTrade()
+        
     elif p.lower() == 'analysis':
         a = input('Which asset would you like analysis for?')
         analysis = kl.query_analysis(a)
