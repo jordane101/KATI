@@ -8,15 +8,14 @@ I have intentions of making this program possible to distribute but that is far 
 
 After downloading the files, you will need to create a .env file called 'keys.env' as well as have a Kraken API key and a Technical Analysis key. These are referenced in krakenLibrary as 'API_KEY_KRAKEN', 'API_SEC_KRAKEN', and 'API_KEY_ANALYSIS' in the keys.env file. 
 
-Also, I recommend using a virtual environment to install modules required for this application. They can all be installed using pip
+Also, I recommend using a virtual environment to install the modules required for this application. They can all be installed using pip
 
 Required installed modules:
 krakenex
 dotenv
 
 Future Plans (in order of importance):
-make it work??
-automatic creation of python virtual environment
+automatic installation of python virtual environment
 library documentation (sorry it's a mess at the moment)
 multiple coins for analysis/trading
 deeper analysis using sentiment in the Technical Analysis API
