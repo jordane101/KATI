@@ -22,7 +22,7 @@ def assetInfo(asset):
     response = requests.get(url).json()
     if not response['error']:
         #check for valid response from API request
-        output = response['result'].get(f'{asset.upper()}')
+        output = response['result'].get(asset.upper())
         if output:
             return output
         else:
@@ -128,14 +128,17 @@ def autoTrade(amount=100, asset='btc'):
         query_time = analysis[0]
         data = analysis[1]
         print(data)
+        
         while running:
+            logFile = open("log.txt", 'a')
             # while loop querying analysis api and automatically adding buy/sell orders
-            if time.time() >= query_time + 900:
+            seconds = 0.1*60
+            if time.time() >= query_time + seconds:
                 #wait 15 minutes between queries
                 analysis = query_analysis('btc')
                 query_time = analysis[0]
                 data = analysis[1]
-                volumeData = amount / data['price_btc']
+                volumeData = int(amount) / data['price_btc']
                 priceData = data['price_btc']
                 orders = orderData()
                 print(data)
@@ -147,6 +150,7 @@ def autoTrade(amount=100, asset='btc'):
                    
                     if not resp['error']:
                         print(f"Buy order added! TX id: {resp['result'].get('txid')}")
+                        
                     else:
                         print(resp['error'])
                 elif sell:
@@ -159,5 +163,8 @@ def autoTrade(amount=100, asset='btc'):
                 else:
                     print('hodling')
                 print(orders)
+                for i in data:
+                    logFile.writelines(f"\n{data.get(i)}")
+                logFile.close()
         #add a log.txt file
     
