@@ -13,6 +13,8 @@ import krakenex
 import os
 from dotenv import load_dotenv
 
+
+
 load_dotenv('keys.env')
 api_key = os.environ.get('API_KEY_KRAKEN')
 api_sec = os.environ.get('API_SEC_KRAKEN')

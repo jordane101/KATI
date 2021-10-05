@@ -117,12 +117,10 @@ def orderData():
     response = kraken_request('/0/private/OpenOrders',{"nonce": str(int(1000*time.time())),"trades": True}, api_key, api_sec).json()
     return response
 
-def autoTrade(amount=100, asset='btc'):
+def autoTrade(sentiment=12, amount=100, asset='btc'):
         # auto buy/sell based on technical analysis API
         # initialize variables
         running = True
-        queriable = False
-        query_time = 0
         # initial query to start program, then wait
         analysis = query_analysis('btc')
         query_time = analysis[0]
@@ -132,10 +130,10 @@ def autoTrade(amount=100, asset='btc'):
         while running:
             logFile = open("log.txt", 'a')
             # while loop querying analysis api and automatically adding buy/sell orders
-            seconds = 0.1*60
+            seconds = 15*60
             if time.time() >= query_time + seconds:
                 #wait 15 minutes between queries
-                analysis = query_analysis('btc')
+                analysis = query_analysis('btc') #returns (time, analysis dict)
                 query_time = analysis[0]
                 data = analysis[1]
                 volumeData = int(amount) / data['price_btc']
@@ -143,11 +141,11 @@ def autoTrade(amount=100, asset='btc'):
                 orders = orderData()
                 print(data)
                 
-                buy = data['recommendation'] == 'buy' and data['sentiment'] > 25
-                sell = data['recommendation'] == 'sell' and data['sentiment'] < 20
+                buy = data['recommendation'] == 'buy' and data['sentiment'] > sentiment
+                sell = data['recommendation'] == 'sell' and data['sentiment'] < sentiment - 10 and priceData > 
                 if buy:
                     resp = addOrder('buy', priceData, volumeData, 'limit', refid=100)
-                   
+                    buyPrice = priceData
                     if not resp['error']:
                         print(f"Buy order added! TX id: {resp['result'].get('txid')}")
                         
@@ -166,5 +164,5 @@ def autoTrade(amount=100, asset='btc'):
                 for i in data:
                     logFile.writelines(f"\n{data.get(i)}")
                 logFile.close()
-        #add a log.txt file
+       
     
