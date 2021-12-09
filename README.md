@@ -1,5 +1,5 @@
 # KATI
-The Kraken Automated Trading Interface (KATI) is a python script I have developed to use analysis from the Technical Analysis API and the Kraken Trading API to automatically determine buying and selling of cryptocurrency.
+The Kraken Automated Trading Interface (KATI) is a python program I have developed to use analysis from the Technical Analysis API and the Kraken Trading API to automatically determine buying and selling of cryptocurrency.
 
 You can find the Technical Analysis API at this address: https://technical-analysis-api.com/
 And the Kraken exchange is at: kraken.com
